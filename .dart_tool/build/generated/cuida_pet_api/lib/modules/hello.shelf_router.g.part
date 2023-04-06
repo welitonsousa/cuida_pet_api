@@ -1,0 +1,13 @@
+// **************************************************************************
+// ShelfRouterGenerator
+// **************************************************************************
+
+Router _$HelloRouter(Hello service) {
+  final router = Router();
+  router.add(
+    'GET',
+    r'/',
+    service.asd,
+  );
+  return router;
+}

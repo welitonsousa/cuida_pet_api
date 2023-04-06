@@ -15,8 +15,10 @@ include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
 
-# linter:
-#   rules:
+linter:
+  rules:
+    avoid_function_literals_in_foreach_calls: false
+
 #     - camel_case_types
 
 # analyzer:
