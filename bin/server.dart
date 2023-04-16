@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cuida_pet_api/application/config/application_config.dart';
+import 'package:cuida_pet_api/application/middlewares/content_type_middlewares.dart';
 import 'package:cuida_pet_api/application/middlewares/cors_middlewares.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -14,6 +15,7 @@ void main(List<String> args) async {
   final ip = InternetAddress.anyIPv4;
   final handler = Pipeline()
       .addMiddleware(logRequests())
+      .addMiddleware(ContentTypeMiddleware().handle)
       .addMiddleware(CorsMiddleware().handle)
       .addHandler(router);
   final port = int.parse(Platform.environment['PORT'] ?? '3000');
