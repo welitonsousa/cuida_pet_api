@@ -162,7 +162,7 @@ packages:
     source: hosted
     version: "1.6.3"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: aa274aa7774f8964e4f4f38cc994db7b6158dd36e9187aaceaddc994b35c6c67
@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  form_validator:
+    dependency: "direct main"
+    description:
+      name: form_validator
+      sha256: "8cbe91b7d5260870d6fb9e23acd55d5d1d1fdf2397f0279a4931ac3c0c7bf8fb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -362,13 +370,21 @@ packages:
     source: hosted
     version: "1.0.4"
   mysql_client:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: mysql_client
       sha256: "6a0fdcbe3e0721c637f97ad24649be2f70dbce2b21ede8f962910e640f753fc2"
       url: "https://pub.dev"
     source: hosted
     version: "0.0.27"
+  mysql_utils:
+    dependency: "direct main"
+    description:
+      name: mysql_utils
+      sha256: "5965fc12a5496c782a4be83b50b42bdf55450d71010a9d52fb8518d744430d4b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   node_preamble:
     dependency: transitive
     description:

@@ -19,6 +19,7 @@ class ApplicationConfig {
   void _loadDataBaseConfig() {
     final config = DataBaseConnection(
       host: env('HOST') ?? '',
+      user: env('USER') ?? '',
       name: env('DATA_BASE_NAME') ?? '',
       password: env('PASSWORD') ?? '',
       port: int.parse(env('PORT') ?? '0'),

@@ -1,10 +1,10 @@
-import 'package:cuida_pet_api/modules/hello_router.dart';
 import 'package:cuida_pet_api/application/routers/i_router.dart';
+import 'package:cuida_pet_api/modules/user/user_router.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 class RouterConfig {
   final List<IRouter> routers = [
-    HelloRouter(),
+    UserRouter(),
   ];
 
   void loadRouters(Router router) {

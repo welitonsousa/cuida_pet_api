@@ -1,6 +1,6 @@
-import 'package:mysql_client/mysql_client.dart';
+import 'package:mysql_utils/mysql_utils.dart';
 
 abstract class IDataBaseConfig {
   IDataBaseConfig();
-  Future<MySQLConnection> openConnection();
+  MysqlUtils openConnection();
 }
