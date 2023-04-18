@@ -1,7 +1,7 @@
 class UserEntity {
   final int? id;
   final String email;
-  final String registerType;
+  final String? registerType;
   final String? password;
   final String? photo;
   final String? iosToken;
@@ -59,35 +59,31 @@ class UserEntity {
   }
 
   Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
+    return {
+      'id': id,
+      'email': email,
+      'register_type': registerType,
+      'photo': photo,
+      'ios_token': iosToken,
+      'android_token': androidToken,
+      'refresh_token': refreshToken,
+      'social_key': socialKey,
+      'supplier_id': supplierId,
+    };
+  }
 
-    if (id != null) {
-      result.addAll({'id': id});
-    }
-    result.addAll({'email': email});
-    result.addAll({'registerType': registerType});
-    if (password != null) {
-      result.addAll({'password': password});
-    }
-    if (photo != null) {
-      result.addAll({'photo': photo});
-    }
-    if (iosToken != null) {
-      result.addAll({'iosToken': iosToken});
-    }
-    if (androidToken != null) {
-      result.addAll({'androidToken': androidToken});
-    }
-    if (refreshToken != null) {
-      result.addAll({'refreshToken': refreshToken});
-    }
-    if (socialKey != null) {
-      result.addAll({'socialKey': socialKey});
-    }
-    if (supplierId != null) {
-      result.addAll({'supplierId': supplierId});
-    }
-
-    return result;
+  factory UserEntity.fromMap(map) {
+    return UserEntity(
+      id: map['id'],
+      email: map['email'],
+      password: map['senha'],
+      registerType: map['tipo_cadastro'],
+      iosToken: map['ios_token'],
+      androidToken: map['android_token'],
+      refreshToken: map['refresh_token'],
+      photo: map['img_avatar'],
+      socialKey: map['social_id'],
+      supplierId: map['fornecedor_id'],
+    );
   }
 }

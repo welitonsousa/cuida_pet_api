@@ -6,6 +6,6 @@ import 'package:shelf_router/src/router.dart';
 class UserRouter extends IRouter {
   @override
   void configure(Router router) {
-    router.mount('/auth/', AuthController(GetIt.I.get()).router);
+    router.mount('/auth/', AuthController(GetIt.I.get(), GetIt.I.get()).router);
   }
 }

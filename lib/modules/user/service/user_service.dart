@@ -1,6 +1,7 @@
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/user/data/i_user_repository.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_save_input_model.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
 import 'package:injectable/injectable.dart';
 import 'i_user_service.dart';
 
@@ -18,5 +19,15 @@ class UserService extends IUserService {
       supplierId: user.supplierId,
     );
     return await repository.createUser(userEntity);
+  }
+
+  @override
+  Future<UserEntity> signWithEmail(UserSignModel user) async {
+    final userEntity = UserEntity(
+      email: user.email!,
+      password: user.password,
+      supplierId: user.supplier ? 1 : null,
+    );
+    return await repository.signWithEmail(userEntity);
   }
 }

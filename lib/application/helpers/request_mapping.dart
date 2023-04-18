@@ -1,12 +1,17 @@
-import 'dart:convert';
+import 'package:form_validator/form_validator.dart';
+export 'package:form_validator/form_validator.dart';
+export 'package:cuida_pet_api/application/helpers/valida_fields.dart';
 
-abstract class RequestMapping<T> {
+typedef ValidMap = Map<String, ValidationBuilder>;
+typedef ValidData = Map<String, dynamic>;
+
+abstract class RequestMapping {
   final Map<String, dynamic> data;
 
-  RequestMapping(String data) : data = jsonDecode(data) {
+  RequestMapping(this.data) {
     fromMap();
   }
   RequestMapping.empty() : data = {};
 
-  T fromMap();
+  void fromMap();
 }

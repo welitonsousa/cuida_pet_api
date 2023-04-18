@@ -43,8 +43,10 @@ extension GetItInjectableX on _i1.GetIt {
         ));
     gh.lazySingleton<_i9.IUserService>(
         () => _i10.UserService(repository: gh<_i6.IUserRepository>()));
-    gh.factory<_i11.AuthController>(
-        () => _i11.AuthController(gh<_i9.IUserService>()));
+    gh.factory<_i11.AuthController>(() => _i11.AuthController(
+          gh<_i9.IUserService>(),
+          gh<_i8.ILogger>(),
+        ));
     return this;
   }
 }

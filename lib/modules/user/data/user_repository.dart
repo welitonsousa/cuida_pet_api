@@ -32,4 +32,26 @@ class UserRepository extends IUserRepository {
       throw UserGenericException();
     }
   }
+
+  @override
+  Future<UserEntity> signWithEmail(UserEntity user) async {
+    final conn = database.openConnection();
+    try {
+      final res = await conn.getOne(
+        table: 'usuario',
+        where: {
+          'email': user.email,
+          'senha': Cripto.encrypt(user.password!),
+          if (user.supplierId != null) 'fornecedor_id': ['is', 'not null'],
+        },
+      );
+      if (res.isEmpty) throw UserNotExistException();
+      return UserEntity.fromMap(res);
+    } catch (e, s) {
+      logger.error('sign with email', e, s);
+      throw UserGenericException();
+    } finally {
+      await conn.close();
+    }
+  }
 }
