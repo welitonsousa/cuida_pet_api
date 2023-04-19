@@ -11,6 +11,16 @@ Router _$AuthControllerRouter(AuthController service) {
   );
   router.add(
     'POST',
+    r'/protegida',
+    service.protegida,
+  );
+  router.add(
+    'PUT',
+    r'/refresh',
+    service.refresh,
+  );
+  router.add(
+    'POST',
     r'/sign',
     service.sign,
   );

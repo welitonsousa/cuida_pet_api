@@ -54,4 +54,65 @@ class UserRepository extends IUserRepository {
       await conn.close();
     }
   }
+
+  @override
+  Future<UserEntity> signSocial(UserEntity user) async {
+    final conn = database.openConnection();
+    try {
+      final userExist = await conn.getOne(
+        table: 'usuario',
+        where: {
+          'email': user.email,
+          if (user.supplierId != null) 'fornecedor_id': ['is', 'not null'],
+        },
+      );
+      if (userExist.isEmpty) {
+        final id = await conn.insert(table: 'usuario', insertData: {
+          'email': user.email,
+          'tipo_cadastro': user.registerType,
+          'img_avatar': user.photo,
+          'senha': Cripto.encrypt(user.password ?? ''),
+          'fornecedor_id': user.supplierId,
+          'social_id': user.socialKey,
+        });
+        return user.copyWith(id: id, password: '');
+      } else {
+        final id = await conn.update(
+          table: 'usuario',
+          where: {'id': userExist['id']},
+          updateData: {
+            'tipo_cadastro': user.registerType,
+            'social_id': user.socialKey,
+          },
+        );
+        return user.copyWith(
+          id: id,
+          registerType: user.registerType,
+          socialKey: user.socialKey,
+          password: '',
+        );
+      }
+    } catch (e, s) {
+      logger.error('sign with social', e, s);
+      throw UserGenericException();
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<UserEntity> refreshToken(UserEntity user) async {
+    final conn = database.openConnection();
+    try {
+      await conn.update(
+        table: 'usuario',
+        updateData: {'refresh_token': user.refreshToken},
+        where: {'id': user.id},
+      );
+      final res = await conn.getOne(table: 'usuario', where: {'id': user.id});
+      return UserEntity.fromMap(res);
+    } finally {
+      await conn.close();
+    }
+  }
 }

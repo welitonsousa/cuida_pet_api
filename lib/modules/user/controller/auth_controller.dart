@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/application/helpers/jwt.dart';
 import 'package:cuida_pet_api/application/helpers/valida_fields.dart';
 import 'package:cuida_pet_api/application/logger/i_logger.dart';
+import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/user/service/i_user_service.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_refresh_token_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_save_input_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
 import 'package:injectable/injectable.dart';
@@ -60,6 +63,40 @@ class AuthController {
     }
   }
 
+  @Route.post('/protegida')
+  Future<Response> protegida(Request req) async {
+    return Response(200,
+        body: jsonEncode({'message': 'Protegida entrada com sucesso'}));
+  }
+
+  @Route.put('/refresh')
+  Future<Response> refresh(Request req) async {
+    final id = int.parse(req.headers['user']!);
+
+    try {
+      final json = await ValidaFields.reqFromMap(req);
+
+      final user = UserRefreshTokenModel(json,
+          userId: id, refreshToken: req.headers['refresh_token']!);
+
+      final userEntity = await _userService.refreshToken(user);
+      final newToken = JWT.generateToken(userEntity);
+      final newRefreshToken = JWT.generateRefreshToken(newToken);
+
+      return ValidaFields.res(map: {
+        'messages': ['Token renovado com sucesso'],
+        'data': {
+          'token': newToken,
+          'refreshToken': newRefreshToken,
+        }
+      });
+    } catch (e) {
+      return ValidaFields.res(status: 401, map: {
+        'messages': ['Token inválido']
+      });
+    }
+  }
+
   @Route.post('/sign')
   Future<Response> sign(Request request) async {
     final json = await ValidaFields.reqFromMap(request);
@@ -71,13 +108,22 @@ class AuthController {
 
     try {
       final user = UserSignModel(json);
-      final userEntity = await _userService.signWithEmail(user);
 
-      final token = JWT.generateToken(userEntity);
+      String token;
+      UserEntity userEntity;
+      if (user.socialType == null) {
+        userEntity = await _userService.signWithEmail(user);
+        token = JWT.generateToken(userEntity);
+      } else {
+        userEntity = await _userService.signSocial(user);
+        token = JWT.generateToken(userEntity);
+      }
+      String refreshToken = JWT.generateRefreshToken(token);
       return ValidaFields.res(map: {
         'messages': ['Usuário logado com sucesso'],
         'data': {
           'token': token,
+          'refreshToken': refreshToken,
           'user': userEntity.toMap(),
         }
       });

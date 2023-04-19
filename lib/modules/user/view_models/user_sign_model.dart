@@ -25,15 +25,9 @@ class UserSignModel extends RequestMapping {
     return {
       'email': ValidaFields.v.email().required(),
       if (data['social_type'] != null) 'social_key': ValidaFields.v.required(),
-      if (data['social_key'] != null)
-        'social_type': ValidaFields.v.type<bool>(),
+      if (data['social_key'] != null) 'social_type': ValidaFields.v,
       if (data['social_type'] == null && data['social_key'] == null)
         'password': ValidaFields.v.minLength(6).required(),
     };
   }
-}
-
-void main() {
-  dynamic data = false;
-  print(data is bool);
 }

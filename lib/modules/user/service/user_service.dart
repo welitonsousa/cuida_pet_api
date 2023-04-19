@@ -1,5 +1,6 @@
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/user/data/i_user_repository.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_refresh_token_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_save_input_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
 import 'package:injectable/injectable.dart';
@@ -29,5 +30,25 @@ class UserService extends IUserService {
       supplierId: user.supplier ? 1 : null,
     );
     return await repository.signWithEmail(userEntity);
+  }
+
+  @override
+  Future<UserEntity> signSocial(UserSignModel user) async {
+    final userEntity = UserEntity(
+      email: user.email!,
+      password: user.password,
+      supplierId: user.supplier ? 1 : null,
+    );
+    return await repository.signSocial(userEntity);
+  }
+
+  @override
+  Future<UserEntity> refreshToken(UserRefreshTokenModel user) async {
+    final userEntity = UserEntity(
+      id: user.userId,
+      email: '',
+      refreshToken: user.refreshToken,
+    );
+    return await repository.refreshToken(userEntity);
   }
 }
