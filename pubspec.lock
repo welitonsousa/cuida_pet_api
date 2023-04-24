@@ -201,14 +201,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  form_validator:
-    dependency: "direct main"
-    description:
-      name: form_validator
-      sha256: "8cbe91b7d5260870d6fb9e23acd55d5d1d1fdf2397f0279a4931ac3c0c7bf8fb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -649,5 +641,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  zod_validation:
+    dependency: "direct main"
+    description:
+      name: zod_validation
+      sha256: "5223a7c99426a4c80203ba4ae58858648bb419d09e6ca66c23578fa5e47373de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
+  dart: ">=2.19.6 <3.0.0"

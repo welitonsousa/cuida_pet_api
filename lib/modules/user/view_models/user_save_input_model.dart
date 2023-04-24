@@ -1,4 +1,5 @@
 import 'package:cuida_pet_api/application/helpers/request_mapping.dart';
+import 'package:zod_validation/zod_validation.dart';
 
 class UserSaveInputModel extends RequestMapping {
   String? email;
@@ -16,8 +17,13 @@ class UserSaveInputModel extends RequestMapping {
 
   static ValidMap validation(Map<String, dynamic> data) {
     return {
-      'password': ValidaFields.v.minLength(8),
-      'email': ValidaFields.v.type<bool>(),
+      'email': Zod().email(),
+      'password': Zod().password(
+        lower: false,
+        special: false,
+        number: false,
+        upper: false,
+      ),
     };
   }
 }

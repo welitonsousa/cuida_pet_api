@@ -1,8 +1,6 @@
-import 'package:form_validator/form_validator.dart';
-export 'package:form_validator/form_validator.dart';
 export 'package:cuida_pet_api/application/helpers/valida_fields.dart';
 
-typedef ValidMap = Map<String, ValidationBuilder>;
+typedef ValidMap = Map<String, dynamic>;
 typedef ValidData = Map<String, dynamic>;
 
 abstract class RequestMapping {

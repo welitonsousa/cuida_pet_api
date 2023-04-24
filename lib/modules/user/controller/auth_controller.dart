@@ -12,6 +12,7 @@ import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:zod_validation/zod_validation.dart';
 
 part 'auth_controller.g.dart';
 
@@ -26,11 +27,14 @@ class AuthController {
   Future<Response> find(Request request) async {
     try {
       final data = await ValidaFields.reqFromMap(request);
-      final valid = ValidaFields.validate(
+      final valid = Zod.validate(
         data: data,
         params: UserSaveInputModel.validation(data),
       );
-      if (valid.isNotEmpty) return ValidaFields.res(map: {'messages': valid});
+
+      if (valid.isNotValid) {
+        return ValidaFields.res(map: {'messages': valid.result});
+      }
       final user = UserSaveInputModel(data);
       final res = await _userService.createUser(user);
       return ValidaFields.res(
@@ -100,11 +104,16 @@ class AuthController {
   @Route.post('/sign')
   Future<Response> sign(Request request) async {
     final json = await ValidaFields.reqFromMap(request);
-    final fields = ValidaFields.validate(
+
+    final valid = Zod.validate(
       data: json,
       params: UserSignModel.validation(json),
     );
-    if (fields.isNotEmpty) return ValidaFields.res(map: {'messages': fields});
+    if (valid.isNotValid) {
+      return ValidaFields.res(map: {
+        'messages': valid.result,
+      });
+    }
 
     try {
       final user = UserSignModel(json);

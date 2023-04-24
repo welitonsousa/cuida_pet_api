@@ -152,12 +152,6 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "form_validator",
-      "rootUri": "file:///Users/welitonsousa/.pub-cache/hosted/pub.dev/form_validator-2.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "frontend_server_client",
       "rootUri": "file:///Users/welitonsousa/.pub-cache/hosted/pub.dev/frontend_server_client-3.2.0",
       "packageUri": "lib/",
@@ -488,13 +482,19 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "zod_validation",
+      "rootUri": "file:///Users/welitonsousa/.pub-cache/hosted/pub.dev/zod_validation-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "cuida_pet_api",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     }
   ],
-  "generated": "2023-04-18T15:44:55.400678Z",
+  "generated": "2023-04-24T18:06:45.384162Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }

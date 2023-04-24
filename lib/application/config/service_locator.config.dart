@@ -16,6 +16,8 @@ import 'package:cuida_pet_api/application/database/i_database_config.dart'
     as _i3;
 import 'package:cuida_pet_api/application/logger/i_logger.dart' as _i8;
 import 'package:cuida_pet_api/modules/user/controller/auth_controller.dart'
+    as _i12;
+import 'package:cuida_pet_api/modules/user/controller/user_controller.dart'
     as _i11;
 import 'package:cuida_pet_api/modules/user/data/i_user_repository.dart' as _i6;
 import 'package:cuida_pet_api/modules/user/data/user_repository.dart' as _i7;
@@ -43,7 +45,11 @@ extension GetItInjectableX on _i1.GetIt {
         ));
     gh.lazySingleton<_i9.IUserService>(
         () => _i10.UserService(repository: gh<_i6.IUserRepository>()));
-    gh.factory<_i11.AuthController>(() => _i11.AuthController(
+    gh.factory<_i11.UserController>(() => _i11.UserController(
+          gh<_i8.ILogger>(),
+          gh<_i9.IUserService>(),
+        ));
+    gh.factory<_i12.AuthController>(() => _i12.AuthController(
           gh<_i9.IUserService>(),
           gh<_i8.ILogger>(),
         ));
