@@ -1,21 +1,23 @@
-import 'package:cuida_pet_api/application/helpers/request_mapping.dart';
 import 'package:zod_validation/zod_validation.dart';
 
-class UserRefreshTokenModel extends RequestMapping {
-  String? refreshToken;
-  int? userId;
-  UserRefreshTokenModel(
-    super.data, {
-    required this.userId,
+class UserRefreshTokenModel {
+  String refreshToken;
+  int userId;
+  UserRefreshTokenModel({
     required this.refreshToken,
+    required this.userId,
   });
 
-  @override
-  void fromMap() {}
-
-  static ValidMap validate(ValidData data) {
+  static Map<String, dynamic> validate(Map<String, dynamic> data) {
     return {
       'refresh_token': Zod().type<String>().min(20),
     };
+  }
+
+  factory UserRefreshTokenModel.fromMap(Map<String, dynamic> map) {
+    return UserRefreshTokenModel(
+      refreshToken: map['refresh_token'] ?? '',
+      userId: map['user_id']?.toInt() ?? 0,
+    );
   }
 }

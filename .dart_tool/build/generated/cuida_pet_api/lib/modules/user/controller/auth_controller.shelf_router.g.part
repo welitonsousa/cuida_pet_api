@@ -10,11 +10,6 @@ Router _$AuthControllerRouter(AuthController service) {
     service.find,
   );
   router.add(
-    'POST',
-    r'/protegida',
-    service.protegida,
-  );
-  router.add(
     'PUT',
     r'/refresh',
     service.refresh,

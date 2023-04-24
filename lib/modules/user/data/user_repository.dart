@@ -3,6 +3,7 @@ import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/application/helpers/cripto.dart';
 import 'package:cuida_pet_api/application/logger/i_logger.dart';
 import 'package:cuida_pet_api/entities/user_entity.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_find_model.dart';
 import 'package:injectable/injectable.dart';
 import 'i_user_repository.dart';
 
@@ -111,6 +112,45 @@ class UserRepository extends IUserRepository {
       );
       final res = await conn.getOne(table: 'usuario', where: {'id': user.id});
       return UserEntity.fromMap(res);
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<UserEntity> findUser(UserFindModel user) async {
+    final conn = database.openConnection();
+    try {
+      final res = await conn.getOne(table: 'usuario', where: {'id': user.id});
+      return UserEntity.fromMap(res);
+    } catch (e, s) {
+      logger.error('find user', e, s);
+      throw UserGenericException();
+    } finally {
+      conn.close();
+    }
+  }
+
+  @override
+  Future<UserEntity> updateUser(UserEntity user) async {
+    final conn = database.openConnection();
+    try {
+      final res = await conn.update(
+        table: 'usuario',
+        updateData: {
+          if (user.photo != null) 'img_avatar': user.photo,
+          if (user.registerType != null) 'tipo_cadastro': user.registerType,
+          if (user.socialKey != null) 'social_id': user.socialKey,
+          if (user.iosToken != null) 'ios_token': user.iosToken,
+          if (user.androidToken != null) 'android_token': user.androidToken,
+        },
+        where: {'id': user.id},
+      );
+
+      return user.copyWith(id: res);
+    } catch (e) {
+      logger.error('update user', e);
+      throw UserGenericException();
     } finally {
       await conn.close();
     }

@@ -1,7 +1,6 @@
-import 'package:cuida_pet_api/application/helpers/request_mapping.dart';
 import 'package:zod_validation/zod_validation.dart';
 
-class UserSignModel extends RequestMapping {
+class UserSignModel {
   String? email;
   String? password;
 
@@ -10,19 +9,16 @@ class UserSignModel extends RequestMapping {
   String? socialType;
   bool supplier = false;
 
-  UserSignModel(super.data);
+  UserSignModel({
+    this.email,
+    this.password,
+    this.avatar,
+    this.socialKey,
+    this.socialType,
+    this.supplier = false,
+  });
 
-  @override
-  void fromMap() {
-    email = data['email'];
-    avatar = data['avatar'];
-    password = data['password'];
-    socialKey = data['social_key'];
-    socialType = data['social_type'];
-    supplier = data['supplier'] ?? false;
-  }
-
-  static ValidMap validation(ValidData data) {
+  static Map<String, dynamic> validation(Map<String, dynamic> data) {
     return {
       'email': Zod().email(),
       if (data['social_type'] != null) 'social_key': Zod().type<String>(),
@@ -35,5 +31,16 @@ class UserSignModel extends RequestMapping {
           upper: false,
         ),
     };
+  }
+
+  factory UserSignModel.fromMap(Map<String, dynamic> map) {
+    return UserSignModel(
+      email: map['email'],
+      password: map['password'],
+      avatar: map['avatar'],
+      socialKey: map['social_key'],
+      socialType: map['social_type'],
+      supplier: map['supplier'] ?? false,
+    );
   }
 }

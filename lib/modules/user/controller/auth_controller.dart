@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/application/helpers/jwt.dart';
 import 'package:cuida_pet_api/application/helpers/valida_fields.dart';
 import 'package:cuida_pet_api/application/logger/i_logger.dart';
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/user/service/i_user_service.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_find_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_refresh_token_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_save_input_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
@@ -35,7 +35,7 @@ class AuthController {
       if (valid.isNotValid) {
         return ValidaFields.res(map: {'messages': valid.result});
       }
-      final user = UserSaveInputModel(data);
+      final user = UserSaveInputModel.fromMap(data);
       final res = await _userService.createUser(user);
       return ValidaFields.res(
         map: {
@@ -67,23 +67,25 @@ class AuthController {
     }
   }
 
-  @Route.post('/protegida')
-  Future<Response> protegida(Request req) async {
-    return Response(200,
-        body: jsonEncode({'message': 'Protegida entrada com sucesso'}));
-  }
-
   @Route.put('/refresh')
   Future<Response> refresh(Request req) async {
     final id = int.parse(req.headers['user']!);
 
     try {
       final json = await ValidaFields.reqFromMap(req);
+      json.addAll({
+        'user_id': id,
+        'refresh_token': req.headers['refresh_token'],
+      });
+      final user = UserFindModel.fromMap(json);
 
-      final user = UserRefreshTokenModel(json,
-          userId: id, refreshToken: req.headers['refresh_token']!);
-
-      final userEntity = await _userService.refreshToken(user);
+      final lastUserInstance = await _userService.findUser(user);
+      if (lastUserInstance.refreshToken == json['refresh_token']) {
+        return Response(401, body: 'Token inválido');
+      }
+      final userRefresh = UserRefreshTokenModel(
+          userId: user.id, refreshToken: json['refresh_token']);
+      final userEntity = await _userService.refreshToken(userRefresh);
       final newToken = JWT.generateToken(userEntity);
       final newRefreshToken = JWT.generateRefreshToken(newToken);
 
@@ -116,7 +118,7 @@ class AuthController {
     }
 
     try {
-      final user = UserSignModel(json);
+      final user = UserSignModel.fromMap(json);
 
       String token;
       UserEntity userEntity;

@@ -1,5 +1,6 @@
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/user/data/i_user_repository.dart';
+import 'package:cuida_pet_api/modules/user/view_models/user_find_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_refresh_token_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_save_input_model.dart';
 import 'package:cuida_pet_api/modules/user/view_models/user_sign_model.dart';
@@ -15,7 +16,7 @@ class UserService extends IUserService {
   @override
   Future<UserEntity> createUser(UserSaveInputModel user) async {
     final userEntity = UserEntity(
-      email: user.email!,
+      email: user.email,
       password: user.password,
       supplierId: user.supplierId,
     );
@@ -50,5 +51,15 @@ class UserService extends IUserService {
       refreshToken: user.refreshToken,
     );
     return await repository.refreshToken(userEntity);
+  }
+
+  @override
+  Future<UserEntity> findUser(UserFindModel user) async {
+    return await repository.findUser(user);
+  }
+
+  @override
+  Future<UserEntity> updateUser(UserEntity user) {
+    return repository.updateUser(user);
   }
 }

@@ -1,21 +1,16 @@
-import 'package:cuida_pet_api/application/helpers/request_mapping.dart';
 import 'package:zod_validation/zod_validation.dart';
 
-class UserSaveInputModel extends RequestMapping {
-  String? email;
-  String? password;
+class UserSaveInputModel {
+  String email;
+  String password;
   int? supplierId;
+  UserSaveInputModel({
+    required this.email,
+    required this.password,
+    this.supplierId,
+  });
 
-  UserSaveInputModel(super.data);
-
-  @override
-  void fromMap() {
-    email = data['email'];
-    password = data['password'];
-    supplierId = data['supplierId'];
-  }
-
-  static ValidMap validation(Map<String, dynamic> data) {
+  static Map<String, dynamic> validation(Map<String, dynamic> data) {
     return {
       'email': Zod().email(),
       'password': Zod().password(
@@ -25,5 +20,13 @@ class UserSaveInputModel extends RequestMapping {
         upper: false,
       ),
     };
+  }
+
+  factory UserSaveInputModel.fromMap(Map<String, dynamic> map) {
+    return UserSaveInputModel(
+      email: map['email'] ?? '',
+      password: map['password'] ?? '',
+      supplierId: map['supplier_id']?.toInt(),
+    );
   }
 }

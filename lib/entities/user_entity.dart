@@ -1,6 +1,6 @@
 class UserEntity {
   final int? id;
-  final String email;
+  final String? email;
   final String? registerType;
   final String? password;
   final String? photo;
@@ -12,7 +12,7 @@ class UserEntity {
 
   UserEntity({
     this.id,
-    required this.email,
+    this.email,
     this.registerType = 'app',
     this.password,
     this.photo,
@@ -66,7 +66,7 @@ class UserEntity {
       'photo': photo,
       'ios_token': iosToken,
       'android_token': androidToken,
-      'refresh_token': refreshToken,
+      // 'refresh_token': refreshToken,
       'social_key': socialKey,
       'supplier_id': supplierId,
     };
