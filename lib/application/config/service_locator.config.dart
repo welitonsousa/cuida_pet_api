@@ -15,6 +15,16 @@ import 'package:cuida_pet_api/application/database/database_config.dart' as _i4;
 import 'package:cuida_pet_api/application/database/i_database_config.dart'
     as _i3;
 import 'package:cuida_pet_api/application/logger/i_logger.dart' as _i8;
+import 'package:cuida_pet_api/modules/categories/controller/categories_controller.dart'
+    as _i17;
+import 'package:cuida_pet_api/modules/categories/data/category_repository.dart'
+    as _i14;
+import 'package:cuida_pet_api/modules/categories/data/i_category_repository.dart'
+    as _i13;
+import 'package:cuida_pet_api/modules/categories/service/category_service.dart'
+    as _i16;
+import 'package:cuida_pet_api/modules/categories/service/i_category_service.dart'
+    as _i15;
 import 'package:cuida_pet_api/modules/user/controller/auth_controller.dart'
     as _i12;
 import 'package:cuida_pet_api/modules/user/controller/user_controller.dart'
@@ -52,6 +62,16 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i12.AuthController>(() => _i12.AuthController(
           gh<_i9.IUserService>(),
           gh<_i8.ILogger>(),
+        ));
+    gh.lazySingleton<_i13.ICategoryRepository>(() => _i14.CategoryRepository(
+          gh<_i3.IDataBaseConfig>(),
+          gh<_i8.ILogger>(),
+        ));
+    gh.lazySingleton<_i15.ICategoryService>(
+        () => _i16.CategoryService(gh<_i13.ICategoryRepository>()));
+    gh.factory<_i17.CategoriesController>(() => _i17.CategoriesController(
+          gh<_i8.ILogger>(),
+          gh<_i15.ICategoryService>(),
         ));
     return this;
   }

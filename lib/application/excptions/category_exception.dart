@@ -1,0 +1,1 @@
+class CategoryGenericException implements Exception {}
