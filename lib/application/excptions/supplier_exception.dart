@@ -1,0 +1,1 @@
+class SupplierGenericException implements Exception {}

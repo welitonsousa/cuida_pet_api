@@ -7,6 +7,6 @@ class CategoriesRoute extends IRouter {
   @override
   void configure(Router router) {
     final controller = GetIt.I.get<CategoriesController>();
-    router.mount('/categories', controller.router);
+    router.mount('/categories/', controller.router);
   }
 }
