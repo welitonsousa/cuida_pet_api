@@ -16,7 +16,6 @@ class CategoryRepository extends ICategoryRepository {
   Future<List<CategoryEntity>> getCategories() async {
     final conn = dataBase.openConnection();
     try {
-      conn.query('');
       final res = await conn.getAll(table: 'categorias_fornecedor');
       return res.map(CategoryEntity.fromMap).toList();
     } catch (e) {
