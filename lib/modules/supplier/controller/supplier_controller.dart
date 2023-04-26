@@ -44,5 +44,29 @@ class SupplierController {
     }
   }
 
+  @Route.get('/<id>')
+  Future<Response> findById(Request req, String id) async {
+    try {
+      final data = {'id': int.tryParse(id)};
+      final params = {'id': Zod().type<int>()};
+
+      final zod = Zod.validate(data: data, params: params);
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+      final res = await _service.findById(data['id']!);
+      return ValidaFields.res(map: {'data': res.toMap()});
+    } catch (e) {
+      _log.error('Erro ao buscar fornecedor por id', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao buscar fornecedor'},
+      );
+    }
+  }
+
   Router get router => _$SupplierControllerRouter(this);
 }
