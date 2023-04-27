@@ -16,7 +16,8 @@ class SupplierService extends ISupplierService {
   }
 
   @override
-  Future<SupplierEntity> findById(int id) {
-    return _repository.findById(id);
-  }
+  Future<SupplierEntity> findById(int id) => _repository.findById(id);
+
+  @override
+  Future<bool> userExistes(String email) => _repository.userExistes(email);
 }

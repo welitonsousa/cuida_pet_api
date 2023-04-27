@@ -6,4 +6,5 @@ abstract class ISupplierRepository {
       double lat, double lng, double distance);
 
   Future<SupplierEntity> findById(int id);
+  Future<bool> userExistes(String email);
 }

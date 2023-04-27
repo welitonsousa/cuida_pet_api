@@ -44,6 +44,31 @@ class SupplierController {
     }
   }
 
+  @Route.get('/user')
+  Future<Response> userExistesByEmail(Request req) async {
+    try {
+      final json = await ValidaFields.reqFromMap(req);
+      final params = {'email': Zod().type<String>().email()};
+      final zod = Zod.validate(data: json, params: params);
+
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+      final res = await _service.userExistes(json['email']!);
+      if (res) return ValidaFields.res(status: 200);
+      return ValidaFields.res(status: 204);
+    } catch (e) {
+      _log.error('Erro ao buscar fornecedor por email', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao buscar fornecedor'},
+      );
+    }
+  }
+
   @Route.get('/<id>')
   Future<Response> findById(Request req, String id) async {
     try {

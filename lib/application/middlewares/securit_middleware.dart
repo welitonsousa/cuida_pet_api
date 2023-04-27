@@ -10,7 +10,8 @@ import 'package:cuida_pet_api/application/middlewares/i_middlewares.dart';
 class SecurityMiddleware extends IMiddleware {
   final skipRoutes = <SkipModel>[
     SkipModel(path: 'auth/register', methods: [Method.POST]),
-    SkipModel(path: 'auth/sign', methods: [Method.POST])
+    SkipModel(path: 'auth/sign', methods: [Method.POST]),
+    SkipModel(path: 'supplier/user', methods: [Method.GET]),
   ];
 
   @override

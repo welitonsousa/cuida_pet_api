@@ -5,4 +5,5 @@ abstract class ISupplierService {
   final distance = 5.0;
   Future<List<SupplierNearByMyDto>> findNearByPosition(double lat, double lng);
   Future<SupplierEntity> findById(int id);
+  Future<bool> userExistes(String email);
 }

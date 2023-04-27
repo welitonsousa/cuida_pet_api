@@ -59,4 +59,18 @@ class SupplierRepository extends ISupplierRepository {
       await conn.close();
     }
   }
+
+  @override
+  Future<bool> userExistes(String email) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.count(
+        table: 'usuario',
+        where: {'email': email},
+      );
+      return res > 0;
+    } finally {
+      await conn.close();
+    }
+  }
 }
