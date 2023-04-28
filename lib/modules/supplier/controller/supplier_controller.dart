@@ -1,5 +1,6 @@
-import 'dart:async';
-
+import 'package:cuida_pet_api/application/excptions/supplier_exception.dart';
+import 'package:cuida_pet_api/application/excptions/user_exception.dart';
+import 'package:cuida_pet_api/modules/supplier/view_model/create_supplier_input_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -40,6 +41,52 @@ class SupplierController {
       return ValidaFields.res(
         status: 500,
         map: {'message': 'Erro ao buscar fornecedores'},
+      );
+    }
+  }
+
+  @Route.post('/')
+  Future<Response> registerSupplier(Request request) async {
+    try {
+      final json = await ValidaFields.reqFromMap(request);
+
+      final required = {
+        'name': Zod().type<String>().min(3),
+        'phone': Zod().phone(),
+        'email': Zod().type<String>().email(),
+        'category_id': Zod().type<int>(),
+      };
+
+      final model = CreateSupplierInputModel.fromMap(json);
+      final zod = Zod.validate(data: json, params: required);
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+      await _service.registerSupplier(model);
+      return ValidaFields.res(map: {
+        'message': 'Fornecedor cadastrado com sucesso',
+      });
+    } on SupplierExistesException {
+      return ValidaFields.res(
+        status: 403,
+        map: {'message': 'Este usuário já é um fornecedor'},
+      );
+    } on UserNotExistException {
+      return ValidaFields.res(
+        status: 400,
+        map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': {'password': 'Senha inválida'},
+        },
+      );
+    } catch (e, s) {
+      _log.error('Erro ao cadastrar fornecedor', e, s);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao cadastrar fornecedor'},
       );
     }
   }

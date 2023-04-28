@@ -55,7 +55,7 @@ class UserService extends IUserService {
 
   @override
   Future<UserEntity> findUser(UserFindModel user) async {
-    return await repository.findUser(user);
+    return await repository.findUser(user.id);
   }
 
   @override

@@ -73,4 +73,26 @@ class SupplierRepository extends ISupplierRepository {
       await conn.close();
     }
   }
+
+  @override
+  Future<int> registerSupplier({
+    required String name,
+    required String phone,
+    required int categoryId,
+  }) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.insert(table: 'fornecedor', insertData: {
+        'nome': name,
+        'telefone': phone,
+        'categorias_fornecedor_id': categoryId,
+      });
+      return res;
+    } catch (e) {
+      print(e);
+      throw Exception('Erro ao registrar fornecedor');
+    } finally {
+      await conn.close();
+    }
+  }
 }

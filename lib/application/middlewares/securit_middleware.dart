@@ -12,6 +12,7 @@ class SecurityMiddleware extends IMiddleware {
     SkipModel(path: 'auth/register', methods: [Method.POST]),
     SkipModel(path: 'auth/sign', methods: [Method.POST]),
     SkipModel(path: 'supplier/user', methods: [Method.GET]),
+    SkipModel(path: 'supplier/', methods: [Method.POST]),
   ];
 
   @override

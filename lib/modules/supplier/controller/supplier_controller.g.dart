@@ -14,6 +14,11 @@ Router _$SupplierControllerRouter(SupplierController service) {
     service.find,
   );
   router.add(
+    'POST',
+    r'/',
+    service.registerSupplier,
+  );
+  router.add(
     'GET',
     r'/user',
     service.userExistesByEmail,

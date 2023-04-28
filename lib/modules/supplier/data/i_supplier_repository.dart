@@ -7,4 +7,10 @@ abstract class ISupplierRepository {
 
   Future<SupplierEntity> findById(int id);
   Future<bool> userExistes(String email);
+
+  Future<int> registerSupplier({
+    required String name,
+    required String phone,
+    required int categoryId,
+  });
 }

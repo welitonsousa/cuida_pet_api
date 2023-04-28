@@ -3,7 +3,6 @@ import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/application/helpers/cripto.dart';
 import 'package:cuida_pet_api/application/logger/i_logger.dart';
 import 'package:cuida_pet_api/entities/user_entity.dart';
-import 'package:cuida_pet_api/modules/user/view_models/user_find_model.dart';
 import 'package:injectable/injectable.dart';
 import 'i_user_repository.dart';
 
@@ -118,10 +117,25 @@ class UserRepository extends IUserRepository {
   }
 
   @override
-  Future<UserEntity> findUser(UserFindModel user) async {
+  Future<UserEntity> findUser(int id) async {
     final conn = database.openConnection();
     try {
-      final res = await conn.getOne(table: 'usuario', where: {'id': user.id});
+      final res = await conn.getOne(table: 'usuario', where: {'id': id});
+      return UserEntity.fromMap(res);
+    } catch (e, s) {
+      logger.error('find user', e, s);
+      throw UserGenericException();
+    } finally {
+      conn.close();
+    }
+  }
+
+  @override
+  Future<UserEntity?> findUserByEmail(String email) async {
+    final conn = database.openConnection();
+    try {
+      final res = await conn.getOne(table: 'usuario', where: {'email': email});
+      if (res.isEmpty) return null;
       return UserEntity.fromMap(res);
     } catch (e, s) {
       logger.error('find user', e, s);
@@ -139,6 +153,7 @@ class UserRepository extends IUserRepository {
         table: 'usuario',
         updateData: {
           if (user.photo != null) 'img_avatar': user.photo,
+          if (user.supplierId != null) 'fornecedor_id': user.supplierId,
           if (user.registerType != null) 'tipo_cadastro': user.registerType,
           if (user.socialKey != null) 'social_id': user.socialKey,
           if (user.iosToken != null) 'ios_token': user.iosToken,
