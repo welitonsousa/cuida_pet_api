@@ -1,6 +1,7 @@
 import 'package:cuida_pet_api/application/database/i_database_config.dart';
 import 'package:cuida_pet_api/dtos/supplier_near_by_my_dto.dart';
 import 'package:cuida_pet_api/entities/supplier_entity.dart';
+import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
 import 'package:cuida_pet_api/modules/supplier/data/i_supplier_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -91,6 +92,29 @@ class SupplierRepository extends ISupplierRepository {
     } catch (e) {
       print(e);
       throw Exception('Erro ao registrar fornecedor');
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<SupplierServiceEntity> createService({
+    required String name,
+    required double value,
+    required int supplierId,
+  }) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.insert(
+        table: 'fornecedor_servicos',
+        insertData: {
+          'nome_servico': name,
+          'valor_servico': value,
+          'fornecedor_id': supplierId,
+        },
+      );
+      return SupplierServiceEntity(
+          id: res, name: name, value: value, supplierId: supplierId);
     } finally {
       await conn.close();
     }

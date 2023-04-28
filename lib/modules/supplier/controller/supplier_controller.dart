@@ -140,5 +140,41 @@ class SupplierController {
     }
   }
 
+  @Route.post('/service')
+  Future<Response> registerService(Request request) async {
+    try {
+      final json = await ValidaFields.reqFromMap(request);
+      final supplierId = int.tryParse(request.headers['supplier'] ?? '');
+
+      final required = {
+        'name': Zod().type<String>().min(3),
+        'value': Zod().type<double>(),
+        'supplier_id': Zod().type<int>(),
+      };
+      json.addAll({'supplier_id': supplierId});
+      final zod = Zod.validate(data: json, params: required);
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+
+      final res = await _service.createService(
+        name: json['name']!,
+        value: json['value']!,
+        supplierId: json['supplier_id']!,
+      );
+
+      return ValidaFields.res(map: {'data': res.toMap()});
+    } catch (e) {
+      _log.error('Erro ao cadastrar serviço', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao cadastrar serviço'},
+      );
+    }
+  }
+
   Router get router => _$SupplierControllerRouter(this);
 }

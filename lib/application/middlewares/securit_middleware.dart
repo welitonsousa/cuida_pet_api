@@ -38,7 +38,7 @@ class SecurityMiddleware extends IMiddleware {
 
       return await innerHandler(request.change(headers: {
         'user': user['sub'],
-        'supplier': user['supplierId'],
+        'supplier': user['supplierId'].toString(),
       }));
     } catch (e) {
       return Response(403, body: jsonEncode({'message': 'Acesso negado'}));

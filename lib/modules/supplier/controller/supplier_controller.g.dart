@@ -28,5 +28,10 @@ Router _$SupplierControllerRouter(SupplierController service) {
     r'/<id>',
     service.findById,
   );
+  router.add(
+    'POST',
+    r'/service',
+    service.registerService,
+  );
   return router;
 }

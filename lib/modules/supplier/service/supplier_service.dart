@@ -2,6 +2,7 @@ import 'package:cuida_pet_api/application/excptions/supplier_exception.dart';
 import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/dtos/supplier_near_by_my_dto.dart';
 import 'package:cuida_pet_api/entities/supplier_entity.dart';
+import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/supplier/data/i_supplier_repository.dart';
 import 'package:cuida_pet_api/modules/supplier/view_model/create_supplier_input_model.dart';
@@ -46,5 +47,18 @@ class SupplierService extends ISupplierService {
 
     if (user != null) await _userRepository.updateUser(userEntity);
     if (user == null) await _userRepository.createUser(userEntity);
+  }
+
+  @override
+  Future<SupplierServiceEntity> createService({
+    required String name,
+    required double value,
+    required int supplierId,
+  }) {
+    return _repository.createService(
+      name: name,
+      value: value,
+      supplierId: supplierId,
+    );
   }
 }
