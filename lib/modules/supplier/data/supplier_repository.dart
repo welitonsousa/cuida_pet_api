@@ -89,9 +89,9 @@ class SupplierRepository extends ISupplierRepository {
         'telefone': phone,
         'categorias_fornecedor_id': categoryId,
       });
+
       return res;
     } catch (e) {
-      print(e);
       throw Exception('Erro ao registrar fornecedor');
     } finally {
       await conn.close();
@@ -142,7 +142,8 @@ class SupplierRepository extends ISupplierRepository {
 
   @override
   Future<SupplierServiceEntity> updateService(
-      SupplierServiceEntity entity) async {
+    SupplierServiceEntity entity,
+  ) async {
     final conn = _database.openConnection();
     try {
       final res = await conn.update(
@@ -156,8 +157,14 @@ class SupplierRepository extends ISupplierRepository {
           'id': entity.id,
         },
       );
-      if (res <= 0) throw ServiceNotExistesException();
 
+      if (res <= 0) {
+        final count = await conn.count(table: 'fornecedor_servicos', where: {
+          'fornecedor_id': entity.supplierId,
+          'id': entity.id,
+        });
+        if (count == 0) throw ServiceNotExistesException();
+      }
       return entity;
     } finally {
       await conn.close();

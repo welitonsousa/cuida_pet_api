@@ -209,7 +209,8 @@ class SupplierController {
       final res = await _service.updateService(entity);
 
       return ValidaFields.res(map: {'data': res.toMap()});
-    } on ServiceNotExistesException {
+    } on ServiceNotExistesException catch (e) {
+      print(e);
       return ValidaFields.res(
         status: 404,
         map: {'message': 'Serviço não encontrado'},
