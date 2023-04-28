@@ -50,15 +50,24 @@ class SupplierService extends ISupplierService {
   }
 
   @override
-  Future<SupplierServiceEntity> createService({
-    required String name,
-    required double value,
-    required int supplierId,
-  }) {
+  Future<SupplierServiceEntity> createService(
+      {required String name, required double value, required int supplierId}) {
     return _repository.createService(
-      name: name,
-      value: value,
-      supplierId: supplierId,
-    );
+        name: name, value: value, supplierId: supplierId);
+  }
+
+  @override
+  Future<void> deleteService(int supplierId, int serviceId) {
+    return _repository.deleteService(supplierId, serviceId);
+  }
+
+  @override
+  Future<List<SupplierServiceEntity>> getService(int supplierId) {
+    return _repository.getService(supplierId);
+  }
+
+  @override
+  Future<SupplierServiceEntity> updateService(SupplierServiceEntity entity) {
+    return _repository.updateService(entity);
   }
 }

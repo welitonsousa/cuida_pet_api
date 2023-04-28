@@ -1,5 +1,7 @@
+import 'package:cuida_pet_api/application/excptions/service_exception.dart';
 import 'package:cuida_pet_api/application/excptions/supplier_exception.dart';
 import 'package:cuida_pet_api/application/excptions/user_exception.dart';
+import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
 import 'package:cuida_pet_api/modules/supplier/view_model/create_supplier_input_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
@@ -167,6 +169,107 @@ class SupplierController {
       );
 
       return ValidaFields.res(map: {'data': res.toMap()});
+    } catch (e) {
+      _log.error('Erro ao cadastrar serviço', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao cadastrar serviço'},
+      );
+    }
+  }
+
+  @Route.put('/service/<id>')
+  Future<Response> updateService(Request request) async {
+    try {
+      final json = await ValidaFields.reqFromMap(request);
+      final supplierId = int.tryParse(request.headers['supplier'] ?? '');
+      final id = int.tryParse(request.params['id'] ?? '');
+
+      final required = {
+        'name': Zod().type<String>().min(3),
+        'value': Zod().type<double>(),
+        'supplier_id': Zod().type<int>(),
+        'id': Zod().type<int>('id inválido'),
+      };
+      json.addAll({'supplier_id': supplierId, 'id': id});
+      final zod = Zod.validate(data: json, params: required);
+
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+      final entity = SupplierServiceEntity(
+        id: id!,
+        name: json['name']!,
+        supplierId: supplierId!,
+        value: json['value']!,
+      );
+      final res = await _service.updateService(entity);
+
+      return ValidaFields.res(map: {'data': res.toMap()});
+    } on ServiceNotExistesException {
+      return ValidaFields.res(
+        status: 404,
+        map: {'message': 'Serviço não encontrado'},
+      );
+    } catch (e) {
+      _log.error('Erro ao cadastrar serviço', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao cadastrar serviço'},
+      );
+    }
+  }
+
+  @Route.delete('/service/<id>')
+  Future<Response> removeService(Request request) async {
+    try {
+      final supplierId = int.tryParse(request.headers['supplier'] ?? '');
+      final id = int.tryParse(request.params['id'] ?? '');
+
+      if (id == null) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Serviço não encontrado',
+          'data': {'id': 'id não informado na url'}
+        });
+      } else if (supplierId == null) {
+        return ValidaFields.res(status: 403, map: {
+          'message': 'Usuário não autorizado',
+          'data': {'supplier_id': 'seu token não é de um fornecedor'}
+        });
+      }
+      await _service.deleteService(supplierId, id);
+      return ValidaFields.res(map: {'message': 'Serviço deletado'});
+    } on ServiceNotExistesException {
+      return ValidaFields.res(
+        status: 404,
+        map: {'message': 'Serviço não encontrado'},
+      );
+    } catch (e) {
+      _log.error('Erro ao cadastrar serviço', e);
+      return ValidaFields.res(
+        status: 500,
+        map: {'message': 'Erro ao cadastrar serviço'},
+      );
+    }
+  }
+
+  @Route.get('/service/<id>')
+  Future<Response> listServices(Request request) async {
+    try {
+      final id = int.tryParse(request.params['id'] ?? '');
+      if (id == null) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': {'id': 'Id inválido'},
+        });
+      }
+      final res = await _service.getService(id);
+      return ValidaFields.res(map: {
+        'data': res.map((e) => e.toMap()).toList(),
+      });
     } catch (e) {
       _log.error('Erro ao cadastrar serviço', e);
       return ValidaFields.res(

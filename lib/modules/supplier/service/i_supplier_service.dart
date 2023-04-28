@@ -14,4 +14,8 @@ abstract class ISupplierService {
     required double value,
     required int supplierId,
   });
+
+  Future<SupplierServiceEntity> updateService(SupplierServiceEntity entity);
+  Future<void> deleteService(int supplierId, int serviceId);
+  Future<List<SupplierServiceEntity>> getService(int supplierId);
 }

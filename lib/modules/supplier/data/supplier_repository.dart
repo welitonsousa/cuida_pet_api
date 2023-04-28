@@ -1,4 +1,5 @@
 import 'package:cuida_pet_api/application/database/i_database_config.dart';
+import 'package:cuida_pet_api/application/excptions/service_exception.dart';
 import 'package:cuida_pet_api/dtos/supplier_near_by_my_dto.dart';
 import 'package:cuida_pet_api/entities/supplier_entity.dart';
 import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
@@ -115,6 +116,63 @@ class SupplierRepository extends ISupplierRepository {
       );
       return SupplierServiceEntity(
           id: res, name: name, value: value, supplierId: supplierId);
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<void> deleteService(int supplierId, int serviceId) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.delete(
+        table: 'fornecedor_servicos',
+        where: {
+          'fornecedor_id': supplierId,
+          'id': serviceId,
+        },
+      );
+      if (res <= 0) throw ServiceNotExistesException();
+    } catch (e) {
+      throw Exception('Erro ao atualizar serviço');
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<SupplierServiceEntity> updateService(
+      SupplierServiceEntity entity) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.update(
+        table: 'fornecedor_servicos',
+        updateData: {
+          'nome_servico': entity.name,
+          'valor_servico': entity.value,
+        },
+        where: {
+          'fornecedor_id': entity.supplierId,
+          'id': entity.id,
+        },
+      );
+      if (res <= 0) throw ServiceNotExistesException();
+
+      return entity;
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<List<SupplierServiceEntity>> getService(int supplierId) async {
+    final conn = _database.openConnection();
+    try {
+      final res = await conn.getAll(table: 'fornecedor_servicos', where: {
+        'fornecedor_id': supplierId,
+      });
+      print(res);
+      return res.map(SupplierServiceEntity.fromMap).toList();
     } finally {
       await conn.close();
     }

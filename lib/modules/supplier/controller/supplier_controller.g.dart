@@ -33,5 +33,20 @@ Router _$SupplierControllerRouter(SupplierController service) {
     r'/service',
     service.registerService,
   );
+  router.add(
+    'PUT',
+    r'/service/<id>',
+    service.updateService,
+  );
+  router.add(
+    'DELETE',
+    r'/service/<id>',
+    service.removeService,
+  );
+  router.add(
+    'GET',
+    r'/service/<id>',
+    service.listServices,
+  );
   return router;
 }

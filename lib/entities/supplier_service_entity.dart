@@ -15,15 +15,15 @@ class SupplierServiceEntity {
       'id': id,
       'name': name,
       'value': value,
-      'supplierId': supplierId,
+      'supplier_id': supplierId,
     };
   }
 
-  factory SupplierServiceEntity.fromMap(Map<String, dynamic> map) {
+  factory SupplierServiceEntity.fromMap(map) {
     return SupplierServiceEntity(
       id: map['id']?.toInt() ?? 0,
       name: map['nome_servico'] ?? '',
-      value: map['valor_servico']?.toDouble() ?? 0.0,
+      value: double.tryParse(map['valor_servico']) ?? 0.0,
       supplierId: map['fornecedor_id']?.toInt() ?? 0,
     );
   }
