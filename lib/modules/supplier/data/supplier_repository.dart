@@ -48,13 +48,13 @@ class SupplierRepository extends ISupplierRepository {
           f.logo,
           f.endereco,
           f.telefone,
-          c.id categoria_fornecedor_id,
+          f.categorias_fornecedor_id,
           c.nome_categoria,
           c.tipo_categoria,
           ST_X(f.latlng) lat,
           ST_Y(f.latlng) lng
         """,
-        where: 'f.id=$id',
+        where: 'f.id=$id and c.id=f.categorias_fornecedor_id',
       );
       return SupplierEntity.fromMap(res);
     } finally {
@@ -180,6 +180,34 @@ class SupplierRepository extends ISupplierRepository {
       });
       print(res);
       return res.map(SupplierServiceEntity.fromMap).toList();
+    } finally {
+      await conn.close();
+    }
+  }
+
+  @override
+  Future<SupplierEntity> updateSupplier(SupplierEntity entity) async {
+    final conn = _database.openConnection();
+    try {
+      print(entity);
+      await conn.update(
+        table: 'fornecedor',
+        updateData: {
+          if (entity.name.isNotEmpty) 'nome': entity.name,
+          if (entity.phone != null) 'telefone': entity.phone,
+          if (entity.address != null) 'endereco': entity.address,
+          if (entity.logo != null) 'logo': entity.logo,
+          if (entity.category.id != 0)
+            'categorias_fornecedor_id': entity.category.id,
+        },
+        where: {'id': entity.id},
+      );
+      if (entity.lat != null && entity.lng != null) {
+        await conn.query(
+            "UPDATE fornecedor SET latlng = ST_GeomFromText('POINT(${entity.lat} ${entity.lng})') WHERE id = ${entity.id}");
+      }
+      final supplier = await findById(entity.id);
+      return supplier;
     } finally {
       await conn.close();
     }

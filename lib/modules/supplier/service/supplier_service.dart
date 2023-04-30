@@ -6,6 +6,7 @@ import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
 import 'package:cuida_pet_api/entities/user_entity.dart';
 import 'package:cuida_pet_api/modules/supplier/data/i_supplier_repository.dart';
 import 'package:cuida_pet_api/modules/supplier/view_model/create_supplier_input_model.dart';
+import 'package:cuida_pet_api/modules/supplier/view_model/update_supplier_input_model.dart';
 import 'package:cuida_pet_api/modules/user/data/i_user_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'i_supplier_service.dart';
@@ -32,7 +33,7 @@ class SupplierService extends ISupplierService {
     final user = await _userRepository.findUserByEmail(model.email);
 
     if (user?.supplierId != null) throw SupplierExistesException();
-    if (user == null && (model.password?.trim().length ?? 0) >= 8) {
+    if (user == null && (model.password?.trim().length ?? 0) < 8) {
       throw UserNotExistException();
     }
 
@@ -69,5 +70,10 @@ class SupplierService extends ISupplierService {
   @override
   Future<SupplierServiceEntity> updateService(SupplierServiceEntity entity) {
     return _repository.updateService(entity);
+  }
+
+  @override
+  Future<SupplierEntity> updateSupplier(UpdateSupplierInputModel entity) {
+    return _repository.updateSupplier(entity.toEntity());
   }
 }

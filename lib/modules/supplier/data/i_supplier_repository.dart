@@ -14,6 +14,7 @@ abstract class ISupplierRepository {
     required String phone,
     required int categoryId,
   });
+  Future<SupplierEntity> updateSupplier(SupplierEntity entity);
 
   Future<SupplierServiceEntity> createService({
     required String name,

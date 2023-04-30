@@ -3,6 +3,7 @@ import 'package:cuida_pet_api/application/excptions/supplier_exception.dart';
 import 'package:cuida_pet_api/application/excptions/user_exception.dart';
 import 'package:cuida_pet_api/entities/supplier_service_entity.dart';
 import 'package:cuida_pet_api/modules/supplier/view_model/create_supplier_input_model.dart';
+import 'package:cuida_pet_api/modules/supplier/view_model/update_supplier_input_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -90,6 +91,39 @@ class SupplierController {
         status: 500,
         map: {'message': 'Erro ao cadastrar fornecedor'},
       );
+    }
+  }
+
+  @Route.put('/')
+  Future<Response> updateSupplier(Request request) async {
+    try {
+      final json = await ValidaFields.reqFromMap(request);
+      final required = {
+        if (json['name'] != null) 'name': Zod().type<String>().min(3),
+        if (json['phone'] != null) 'phone': Zod().phone(),
+        if (json['logo'] != null) 'logo': Zod().type<String>(),
+        if (json['lat'] != null) 'lat': Zod().type<double>(),
+        if (json['lng'] != null) 'lng': Zod().type<double>(),
+        if (json['category'] != null) 'id': Zod().type<int>(),
+      };
+      final zod = Zod.validate(data: json, params: required);
+      if (zod.isNotValid) {
+        return ValidaFields.res(status: 400, map: {
+          'message': 'Parâmetros de entrada inválidos',
+          'data': zod.result,
+        });
+      }
+      json.addAll({'id': int.parse(request.headers['supplier']!)});
+      final input = UpdateSupplierInputModel.fromMap(json);
+      final res = await _service.updateSupplier(input);
+      return ValidaFields.res(map: {
+        'message': 'Fornecedor atualizado com sucesso',
+        'data': res.toMap(),
+      });
+    } catch (e, s) {
+      _log.error('Erro ao atualizar fornecedor', e, s);
+      return ValidaFields.res(
+          status: 500, map: {'message': 'Erro ao atualizar fornecedor'});
     }
   }
 
@@ -209,8 +243,7 @@ class SupplierController {
       final res = await _service.updateService(entity);
 
       return ValidaFields.res(map: {'data': res.toMap()});
-    } on ServiceNotExistesException catch (e) {
-      print(e);
+    } on ServiceNotExistesException {
       return ValidaFields.res(
         status: 404,
         map: {'message': 'Serviço não encontrado'},

@@ -3,6 +3,7 @@ class SupplierServiceEntity {
   final String name;
   final double value;
   final int supplierId;
+
   SupplierServiceEntity({
     required this.id,
     required this.name,
